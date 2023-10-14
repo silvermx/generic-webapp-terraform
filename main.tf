@@ -1,24 +1,3 @@
-
-### Network Infrastructure
-
-/**
-resource "google_compute_network" "vpc_network"{
-    name = "vpc-network"
-    auto_create_subnetworks = false
-}
-
-resource "google_compute_subnetwork" "subnet_network" {
-  name = "subnet-network"
-  ip_cidr_range = "10.1.0.0/24"
-  region = var.region
-  network = google_compute_network.vpc_network.id
-}
-**/
-
-### Cloud Storage  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
 ### Network ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // External Load Balancer
@@ -74,8 +53,7 @@ resource "google_cloud_run_service" "frontend_app" {
   template {
     spec {
       containers {
-        image = "us-central1-docker.pkg.dev/${var.project_id}/${local.frontend_repo_name}/${local.frontend_app_name}:latest"
-        //image = "us-docker.pkg.dev/cloudrun/container/hello"
+        image = "${var.repo_name}/${local.frontend_app_name}:latest"
         ports {
           container_port = 8080
         }
@@ -101,7 +79,6 @@ resource "google_cloud_run_service_iam_member" "public-access" {
   member   = "allUsers"
 }
 
-
 ### Back Application - Java  ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 //source: https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-java-service
 resource "google_cloud_run_service" "backend_app" {
@@ -111,7 +88,7 @@ resource "google_cloud_run_service" "backend_app" {
   template {
     spec {
       containers {
-        image = "us-central1-docker.pkg.dev/${var.project_id}/${local.backend_repo_name}/${local.backend_app_name}:latest"
+        image = "${var.repo_name}/${local.backend_app_name}:latest"
         ports {
           container_port = 8080
         }
@@ -163,9 +140,6 @@ resource "google_cloud_run_service_iam_policy" "public-access-tmp-backed" {
   policy_data = data.google_iam_policy.noauth.policy_data
 }
 
-### MemoryStore - Redis ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
 ### Database  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 resource "google_sql_database_instance" "instance" {
   name             = local.db_instance_name
@@ -188,78 +162,4 @@ resource "google_sql_user" "users" {
   name     = local.db_user_name
   instance = google_sql_database_instance.instance.name
   password = var.db_user_pass
-}
-
-### Cloud Build  ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-// Frontend Application Configuration
-resource "google_artifact_registry_repository" "frontend-repo" {
-  location      = var.region
-  repository_id = local.frontend_repo_name
-  format        = "DOCKER"
-}
-
-resource "google_cloudbuild_trigger" "frontend-build-trigger" {
-  name     = "${local.frontend_app_name}-trigger"
-  location = var.region
-
-  trigger_template {
-    branch_name = "master"
-    repo_name   = local.frontend_app_name
-  }
-
-  build {
-    step {
-      name = "gcr.io/cloud-builders/docker"
-      args = ["build", "-t", "us-central1-docker.pkg.dev/${var.project_id}/${local.frontend_repo_name}/${local.frontend_app_name}:$COMMIT_SHA", "-t", "us-central1-docker.pkg.dev/${var.project_id}/${local.frontend_repo_name}/${local.frontend_app_name}:latest", "."]
-    }
-
-    step {
-      name = "gcr.io/cloud-builders/docker"
-      args = ["push", "us-central1-docker.pkg.dev/${var.project_id}/${local.frontend_repo_name}/${local.frontend_app_name}:$COMMIT_SHA"]
-    }
-
-    step {
-      name = "gcr.io/cloud-builders/docker"
-      args = ["push", "us-central1-docker.pkg.dev/${var.project_id}/${local.frontend_repo_name}/${local.frontend_app_name}:latest"]
-    }
-  }
-}
-
-// Backend Application Configuration
-resource "google_artifact_registry_repository" "backend-repo" {
-  location      = var.region
-  repository_id = local.backend_repo_name
-  format        = "DOCKER"
-
-  //docker_config {
-  //  immutable_tags = true
-  //}
-}
-
-resource "google_cloudbuild_trigger" "backend-build-trigger" {
-  name     = "${local.backend_app_name}-trigger"
-  location = var.region
-
-  trigger_template {
-    branch_name = "master"
-    repo_name   = local.backend_app_name
-  }
-
-  build {
-    step {
-      name = "gcr.io/cloud-builders/docker"
-      args = ["build", "-t", "us-central1-docker.pkg.dev/${var.project_id}/${local.backend_repo_name}/${local.backend_app_name}:$COMMIT_SHA", "-t", "us-central1-docker.pkg.dev/${var.project_id}/${local.backend_repo_name}/${local.backend_app_name}:latest", "."]
-    }
-
-    step {
-      name = "gcr.io/cloud-builders/docker"
-      args = ["push", "us-central1-docker.pkg.dev/${var.project_id}/${local.backend_repo_name}/${local.backend_app_name}:$COMMIT_SHA"]
-    }
-
-    step {
-      name = "gcr.io/cloud-builders/docker"
-      args = ["push", "us-central1-docker.pkg.dev/${var.project_id}/${local.backend_repo_name}/${local.backend_app_name}:latest"]
-    }
-  }
 }
