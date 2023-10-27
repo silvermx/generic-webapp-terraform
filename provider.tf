@@ -1,12 +1,13 @@
 terraform {
   required_providers {
     google = {
-      source  = "hashicorp/google"
-      version = "4.82.0"
+      source = "hashicorp/google"
+      version = "4.84.0"
     }
+    
     google-beta = {
       source  = "hashicorp/google-beta"
-      version = ">= 4.50, < 5.0"
+      version = "4.84.0"
     }
   }
   provider_meta "google" {
@@ -22,12 +23,30 @@ provider "google" {
   project     = var.project_id
   region      = var.region
   zone        = "us-central1-a"
-  credentials = "terraform-399314-sa-key.json"
+  credentials = "${var.project_id}-sa-key.json"
 }
 
 provider "google-beta" {
   project     = var.project_id
   region      = var.region
   zone        = "us-central1-a"
-  credentials = "terraform-399314-sa-key.json"
+  credentials = "${var.project_id}-sa-key.json"
+}
+
+
+//Enable google  apis
+module "project-services" {
+  source  = "terraform-google-modules/project-factory/google//modules/project_services"
+  version = "~> 14.4"
+
+  project_id  = var.project_id
+
+  activate_apis = [
+    "cloudresourcemanager.googleapis.com",
+    "compute.googleapis.com",
+    "run.googleapis.com",
+    "sqladmin.googleapis.com",
+    "networkmanagement.googleapis.com",
+  ]
+  disable_services_on_destroy = false
 }
