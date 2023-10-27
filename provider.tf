@@ -1,10 +1,10 @@
 terraform {
   required_providers {
     google = {
-      source = "hashicorp/google"
+      source  = "hashicorp/google"
       version = "4.84.0"
     }
-    
+
     google-beta = {
       source  = "hashicorp/google-beta"
       version = "4.84.0"
@@ -39,7 +39,7 @@ module "project-services" {
   source  = "terraform-google-modules/project-factory/google//modules/project_services"
   version = "~> 14.4"
 
-  project_id  = var.project_id
+  project_id = var.project_id
 
   activate_apis = [
     "cloudresourcemanager.googleapis.com",

@@ -42,31 +42,31 @@ module "external_lb_http" {
 
 ### Front Application - vau.js --------------------------------------------------------------------------------------------------------------------------------------------------------------
 resource "google_cloud_run_v2_service" "frontend_app" {
-  name     = local.frontend_app_name
-  location = var.region
+  name         = local.frontend_app_name
+  location     = var.region
   launch_stage = "BETA"
   template {
     containers {
       // Git repository: https://github.com/silvermx/generic-webapp-frontend
       image = "${var.repo_name}/${local.frontend_app_name}:latest"
-        ports {
-          container_port = 8080
-        }
-        env {
-          name  = "VUE_APP_INTERNAL_LB_URL"
-          value = "${google_compute_forwarding_rule.forwarding_rule_backend.ip_address}:8080"
-        }
+      ports {
+        container_port = 8080
+      }
+      env {
+        name  = "VUE_APP_INTERNAL_LB_URL"
+        value = "${google_compute_forwarding_rule.forwarding_rule_backend.ip_address}:8080"
+      }
     }
-    vpc_access{     
+    vpc_access {
       network_interfaces {
-        network = google_compute_network.internal_lb_network.name
+        network    = google_compute_network.internal_lb_network.name
         subnetwork = google_compute_subnetwork.internal_lb_subnet.name
-        tags = [ "web-app" ]
+        tags       = ["web-app"]
       }
       egress = "ALL_TRAFFIC"
     }
   }
-  depends_on                 = [google_compute_forwarding_rule.forwarding_rule_backend]
+  depends_on = [google_compute_forwarding_rule.forwarding_rule_backend]
 }
 
 

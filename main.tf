@@ -7,11 +7,11 @@ resource "google_compute_network" "internal_lb_network" {
 }
 
 resource "google_compute_subnetwork" "internal_lb_subnet" {
-  provider                = google-beta
-  name          = "internal-lb-subnet"
-  region        = var.region
-  network       = google_compute_network.internal_lb_network.id
-  ip_cidr_range = "10.1.2.0/24"
+  provider                 = google-beta
+  name                     = "internal-lb-subnet"
+  region                   = var.region
+  network                  = google_compute_network.internal_lb_network.id
+  ip_cidr_range            = "10.1.2.0/24"
   private_ip_google_access = true
 }
 
@@ -24,7 +24,7 @@ resource "google_compute_firewall" "allow_8080" {
     protocol = "tcp"
     ports    = ["8080"]
   }
-  source_tags = [ "web-app" ]
+  source_tags = ["web-app"]
 }
 
 resource "google_compute_subnetwork" "proxy_only_subnet" {

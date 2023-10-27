@@ -16,9 +16,9 @@ resource "google_compute_region_network_endpoint_group" "serverless_neg_backend"
 
 # backend service
 resource "google_compute_region_backend_service" "region_backend_frontend" {
-  name     = "region-backend-frontend-${var.project_name}"
-  provider = google-beta
-  region   = var.region
+  name                  = "region-backend-frontend-${var.project_name}"
+  provider              = google-beta
+  region                = var.region
   protocol              = "HTTP"
   load_balancing_scheme = "INTERNAL_MANAGED"
   backend {
@@ -46,11 +46,11 @@ resource "google_compute_region_target_http_proxy" "http_proxy_backend" {
 
 # forwarding rule
 resource "google_compute_forwarding_rule" "forwarding_rule_backend" {
-  name       = "forwarding-rule-${local.backend_app_name}"
-  depends_on = [google_compute_subnetwork.proxy_only_subnet]
-  provider    = google-beta
-  region      = var.region
-  ip_protocol = "TCP"
+  name                  = "forwarding-rule-${local.backend_app_name}"
+  depends_on            = [google_compute_subnetwork.proxy_only_subnet]
+  provider              = google-beta
+  region                = var.region
+  ip_protocol           = "TCP"
   load_balancing_scheme = "INTERNAL_MANAGED"
   port_range            = "8080"
   target                = google_compute_region_target_http_proxy.http_proxy_backend.id
@@ -103,6 +103,7 @@ resource "google_cloud_run_service" "backend_app" {
         "autoscaling.knative.dev/maxScale"      = "100"
         "run.googleapis.com/cloudsql-instances" = google_sql_database_instance.instance.connection_name
         "run.googleapis.com/client-name"        = "terraform"
+        "run.googleapis.com/ingress"            = "internal-and-cloud-load-balancing"
       }
     }
   }
