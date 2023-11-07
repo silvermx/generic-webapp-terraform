@@ -23,14 +23,14 @@ provider "google" {
   project     = var.project_id
   region      = var.region
   zone        = "us-central1-a"
-  credentials = "${var.project_id}-sa-key.json"
+  credentials = "terraform-sa-key.json"
 }
 
 provider "google-beta" {
   project     = var.project_id
   region      = var.region
   zone        = "us-central1-a"
-  credentials = "${var.project_id}-sa-key.json"
+  credentials = "terraform-sa-key.json"
 }
 
 # Enable Network Manager API
