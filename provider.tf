@@ -33,20 +33,26 @@ provider "google-beta" {
   credentials = "${var.project_id}-sa-key.json"
 }
 
+# Enable Network Manager API
+resource "google_project_service" "networkmanagement_api" {
+  service            = "networkmanagement.googleapis.com"
+  disable_on_destroy = false
+}
 
-//Enable google  apis
-module "project-services" {
-  source  = "terraform-google-modules/project-factory/google//modules/project_services"
-  version = "~> 14.4"
+# Enable Cloud Run API
+resource "google_project_service" "cloudrun_api" {
+  service            = "run.googleapis.com"
+  disable_on_destroy = false
+}
 
-  project_id = var.project_id
+# Enable Sql Manager API
+resource "google_project_service" "sqladmin_api" {
+  service            = "sqladmin.googleapis.com"
+  disable_on_destroy = false
+}
 
-  activate_apis = [
-    "cloudresourcemanager.googleapis.com",
-    "compute.googleapis.com",
-    "run.googleapis.com",
-    "sqladmin.googleapis.com",
-    "networkmanagement.googleapis.com",
-  ]
-  disable_services_on_destroy = false
+# Enable Secret Manager API
+resource "google_project_service" "secretmanager_api" {
+  service            = "secretmanager.googleapis.com"
+  disable_on_destroy = false
 }
