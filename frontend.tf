@@ -53,8 +53,9 @@ resource "google_cloud_run_v2_service" "frontend_app" {
         container_port = 8080
       }
       env {
-        name  = "VUE_APP_INTERNAL_LB_URL"
-        value = "${google_compute_forwarding_rule.forwarding_rule_backend.ip_address}:8080"
+        name  = "NUXT_APP_INTERNAL_LB_URL"
+        value = "http://${google_compute_forwarding_rule.forwarding_rule_backend.ip_address}:8080"
+
       }
     }
     vpc_access {

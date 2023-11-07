@@ -5,7 +5,7 @@
 
 //TODO add the ssl-certificates
 resource "google_compute_region_network_endpoint_group" "serverless_neg_backend" {
-  provider              = google-beta
+  //provider              = google-beta
   name                  = "serverless-neg-${local.backend_app_name}"
   network_endpoint_type = "SERVERLESS"
   region                = var.region
@@ -17,7 +17,7 @@ resource "google_compute_region_network_endpoint_group" "serverless_neg_backend"
 # backend service
 resource "google_compute_region_backend_service" "region_backend_frontend" {
   name                  = "region-backend-frontend-${var.project_name}"
-  provider              = google-beta
+  //provider              = google-beta
   region                = var.region
   protocol              = "HTTP"
   load_balancing_scheme = "INTERNAL_MANAGED"
@@ -31,7 +31,7 @@ resource "google_compute_region_backend_service" "region_backend_frontend" {
 # URL map
 resource "google_compute_region_url_map" "url_map_backend" {
   name            = "url-map-${local.backend_app_name}"
-  provider        = google-beta
+  //provider        = google-beta
   region          = var.region
   default_service = google_compute_region_backend_service.region_backend_frontend.id
 }
@@ -39,7 +39,7 @@ resource "google_compute_region_url_map" "url_map_backend" {
 # HTTP target proxy
 resource "google_compute_region_target_http_proxy" "http_proxy_backend" {
   name     = "http-proxy-${local.backend_app_name}"
-  provider = google-beta
+  //provider = google-beta
   region   = var.region
   url_map  = google_compute_region_url_map.url_map_backend.id
 }
@@ -48,7 +48,7 @@ resource "google_compute_region_target_http_proxy" "http_proxy_backend" {
 resource "google_compute_forwarding_rule" "forwarding_rule_backend" {
   name                  = "forwarding-rule-${local.backend_app_name}"
   depends_on            = [google_compute_subnetwork.proxy_only_subnet]
-  provider              = google-beta
+  //provider              = google-beta
   region                = var.region
   ip_protocol           = "TCP"
   load_balancing_scheme = "INTERNAL_MANAGED"
@@ -95,6 +95,10 @@ resource "google_cloud_run_service" "backend_app" {
           name  = "DATABASE_PASSWORD"
           value = var.db_user_pass
         }
+        env {
+          name  = "APP_FRONTEND_URL"
+          value = "http://${module.external_lb_http.external_ip}"
+        }
       }
     }
 
@@ -103,14 +107,18 @@ resource "google_cloud_run_service" "backend_app" {
         "autoscaling.knative.dev/maxScale"      = "100"
         "run.googleapis.com/cloudsql-instances" = google_sql_database_instance.instance.connection_name
         "run.googleapis.com/client-name"        = "terraform"
-        "run.googleapis.com/ingress"            = "internal-and-cloud-load-balancing"
       }
+    }
+  }
+  metadata {
+    annotations = {
+      "run.googleapis.com/ingress"            = "internal"
     }
   }
   autogenerate_revision_name = true
 }
 
-
+/*
 data "google_iam_policy" "noauth" {
   binding {
     role = "roles/run.invoker"
@@ -124,5 +132,14 @@ resource "google_cloud_run_service_iam_policy" "public-access-tmp-backed" {
   location    = var.region
   project     = var.project_id
   service     = google_cloud_run_service.backend_app.name
-  policy_data = data.google_iam_policy.noauth.policy_data
+  policy_data = data.google_iam_policy.noauth.policy_datas
+}
+*/
+
+resource "google_cloud_run_service_iam_member" "public-access-backend" {
+  location = var.region
+  project  = var.project_id
+  service  = google_cloud_run_service.backend_app.name
+  role     = "roles/run.invoker"
+  member   = "allUsers"
 }

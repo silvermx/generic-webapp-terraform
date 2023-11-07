@@ -1,5 +1,5 @@
 //This is just to test the backed works fine internally
-/*
+
 resource "google_compute_instance" "default" {
   name         = "my-instance"
   machine_type = "n2-standard-2"
@@ -33,4 +33,3 @@ resource "google_compute_firewall" "internal_lb_network" {
 
   source_ranges = [ "0.0.0.0/0" ]
 }
-*/
