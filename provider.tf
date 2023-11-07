@@ -33,9 +33,15 @@ provider "google-beta" {
   credentials = "terraform-sa-key.json"
 }
 
-# Enable Secret Manager API
-resource "google_project_service" "cloudresourcemanager_api" {
-  service            = "cloudresourcemanager.googleapis.com"
+# Enable Service Usage API
+resource "google_project_service" "cloudserviceusage_api" {
+  service                    = "serviceusage.googleapis.com"
+  disable_dependent_services = true
+}
+
+# Enable Compute API
+resource "google_project_service" "compute_api" {
+  service            = "compute.googleapis.com"
   disable_on_destroy = false
 }
 
