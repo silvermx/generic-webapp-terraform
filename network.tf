@@ -12,7 +12,7 @@ resource "google_compute_subnetwork" "internal_lb_subnet" {
   name                     = "internal-lb-subnet"
   region                   = var.region
   network                  = google_compute_network.internal_lb_network.id
-  ip_cidr_range            = "10.1.2.0/23"
+  ip_cidr_range            = "10.1.2.0/24"
   private_ip_google_access = true
 }
 

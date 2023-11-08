@@ -33,6 +33,12 @@ provider "google-beta" {
   credentials = "terraform-sa-key.json"
 }
 
+# Enable Resource Manager API
+resource "google_project_service" "resourcemanager_api" {
+  service = "cloudresourcemanager.googleapis.com"
+  disable_dependent_services = true
+}
+
 # Enable Service Usage API
 resource "google_project_service" "cloudserviceusage_api" {
   service                    = "serviceusage.googleapis.com"
@@ -67,4 +73,9 @@ resource "google_project_service" "sqladmin_api" {
 resource "google_project_service" "secretmanager_api" {
   service            = "secretmanager.googleapis.com"
   disable_on_destroy = false
+}
+
+resource "time_sleep" "gcp_wait_crm_api_enabling" {
+  depends_on = [google_project_service.resourcemanager_api]
+  create_duration = "1m"
 }
