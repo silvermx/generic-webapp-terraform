@@ -76,6 +76,6 @@ resource "google_project_service" "secretmanager_api" {
 }
 
 resource "time_sleep" "gcp_wait_crm_api_enabling" {
-  depends_on = [google_project_service.resourcemanager_api]
+  depends_on = [google_project_service.resourcemanager_api, google_project_service.compute_api]
   create_duration = "1m"
 }
