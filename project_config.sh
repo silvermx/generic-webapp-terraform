@@ -39,7 +39,8 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="serviceAccount:terraform@$PROJECT_ID.iam.gserviceaccount.com" \
     --role="roles/serviceusage.serviceUsageAdmin"
 
-# Checkout terraform project
+# Checkout terraform projects
+rm -rf ~/generic-webapp-terraform
 git clone https://github.com/silvermx/generic-webapp-terraform.git
 
 # Set project id at the terraform projects
