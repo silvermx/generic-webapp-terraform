@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Sets the project id
 export PROJECT_ID=terraform-$RANDOM
 # Creates the new project
