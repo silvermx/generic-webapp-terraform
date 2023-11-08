@@ -42,6 +42,9 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 # Checkout terraform project
 git clone https://github.com/silvermx/generic-webapp-terraform.git
 
+# Set project id at the terraform projects
+sed -i "s|<PROYECT_ID>|${PROJECT_ID}|" ~/generic-webapp-terraform/variables.tf
+
 # Create service accout key
 gcloud iam service-accounts keys create terraform-sa-key.json --iam-account=terraform@$PROJECT_ID.iam.gserviceaccount.com
 mv terraform-sa-key.json generic-webapp-terraform
