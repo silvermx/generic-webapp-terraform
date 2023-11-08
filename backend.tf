@@ -81,28 +81,28 @@ resource "google_cloud_run_v2_service" "backend_app" {
         value = google_sql_database_instance.instance.connection_name
       }
       env {
-        name  = "DATABASE_NAME"
+        name = "DATABASE_NAME"
         value_source {
           secret_key_ref {
-            secret = google_secret_manager_secret.db_name.secret_id
+            secret  = google_secret_manager_secret.db_name.secret_id
             version = "1"
           }
         }
       }
       env {
-        name  = "DATABASE_USERNAME"
+        name = "DATABASE_USERNAME"
         value_source {
           secret_key_ref {
-            secret = google_secret_manager_secret.db_user_name.secret_id
+            secret  = google_secret_manager_secret.db_user_name.secret_id
             version = "1"
           }
         }
       }
       env {
-        name  = "DATABASE_PASSWORD"
+        name = "DATABASE_PASSWORD"
         value_source {
           secret_key_ref {
-            secret = google_secret_manager_secret.db_user_pass.secret_id
+            secret  = google_secret_manager_secret.db_user_pass.secret_id
             version = "1"
           }
         }
@@ -123,7 +123,7 @@ resource "google_cloud_run_v2_service" "backend_app" {
       }
     }
   }
-  client = "terraform"
+  client     = "terraform"
   depends_on = [google_project_service.secretmanager_api, google_project_service.cloudrun_api, google_project_service.sqladmin_api]
 }
 

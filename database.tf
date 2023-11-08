@@ -40,14 +40,14 @@ resource "google_secret_manager_secret" "db_name" {
 }
 
 resource "google_secret_manager_secret_version" "db_name_version_data" {
-  secret = google_secret_manager_secret.db_name.name
+  secret      = google_secret_manager_secret.db_name.name
   secret_data = local.db_name
 }
 
 resource "google_secret_manager_secret_iam_member" "db_name_access" {
-  secret_id = google_secret_manager_secret.db_name.id
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
+  secret_id  = google_secret_manager_secret.db_name.id
+  role       = "roles/secretmanager.secretAccessor"
+  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
   depends_on = [google_secret_manager_secret.db_name]
 }
 
@@ -62,14 +62,14 @@ resource "google_secret_manager_secret" "db_user_name" {
 }
 
 resource "google_secret_manager_secret_version" "db_user_name_version_data" {
-  secret = google_secret_manager_secret.db_user_name.name
+  secret      = google_secret_manager_secret.db_user_name.name
   secret_data = local.db_user_name
 }
 
 resource "google_secret_manager_secret_iam_member" "db_user_name_access" {
-  secret_id = google_secret_manager_secret.db_user_name.id
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
+  secret_id  = google_secret_manager_secret.db_user_name.id
+  role       = "roles/secretmanager.secretAccessor"
+  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
   depends_on = [google_secret_manager_secret.db_user_name]
 }
 
@@ -83,13 +83,13 @@ resource "google_secret_manager_secret" "db_user_pass" {
 }
 
 resource "google_secret_manager_secret_version" "db_user_pass_version_data" {
-  secret = google_secret_manager_secret.db_user_pass.name
+  secret      = google_secret_manager_secret.db_user_pass.name
   secret_data = var.db_user_pass
 }
 
 resource "google_secret_manager_secret_iam_member" "db_user_pass_access" {
-  secret_id = google_secret_manager_secret.db_user_pass.id
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
+  secret_id  = google_secret_manager_secret.db_user_pass.id
+  role       = "roles/secretmanager.secretAccessor"
+  member     = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
   depends_on = [google_secret_manager_secret.db_user_pass]
 }
