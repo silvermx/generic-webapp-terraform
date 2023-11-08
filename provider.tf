@@ -37,14 +37,14 @@ provider "google-beta" {
 resource "google_project_service" "resourcemanager_api" {
   project     = var.project_id
   service = "cloudresourcemanager.googleapis.com"
-  disable_dependent_services = true
+  disable_on_destroy = false
 }
 
 # Enable Service Usage API
 resource "google_project_service" "cloudserviceusage_api" {
   project     = var.project_id
   service                    = "serviceusage.googleapis.com"
-  disable_dependent_services = true
+  disable_on_destroy = false
 }
 
 # Enable Compute API
