@@ -39,9 +39,12 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="serviceAccount:terraform@$PROJECT_ID.iam.gserviceaccount.com" \
     --role="roles/serviceusage.serviceUsageAdmin"
 
-# Create service accout key
+# Checkout terraform project
+git clone https://github.com/silvermx/generic-webapp-terraform.git
 
+# Create service accout key
 gcloud iam service-accounts keys create terraform-sa-key.json --iam-account=terraform@$PROJECT_ID.iam.gserviceaccount.com
+mv terraform-sa-key.json generic-webapp-terraform
 
 # Enable the apis required (it may take some minutes)
 # Some apis require to enable billing before to activate, terraform will help with that
