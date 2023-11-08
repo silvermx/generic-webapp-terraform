@@ -4,7 +4,7 @@ resource "google_compute_network" "internal_lb_network" {
   provider                = google-beta
   name                    = "internal-lb-network"
   auto_create_subnetworks = false
-  depends_on = [google_project_service.networkmanagement_api]
+  depends_on = [google_project_service.networkmanagement_api, google_project_service.compute_api]
 }
 
 resource "google_compute_subnetwork" "internal_lb_subnet" {

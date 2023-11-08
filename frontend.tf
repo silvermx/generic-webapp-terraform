@@ -29,7 +29,7 @@ module "external_lb_http" {
       }
     }
   }
-  depends_on = [google_project_service.networkmanagement_api]
+  depends_on = [google_project_service.networkmanagement_api, google_project_service.compute_api]
 }
 
 resource "google_compute_region_network_endpoint_group" "serverless_neg_frontend" {
