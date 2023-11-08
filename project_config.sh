@@ -39,7 +39,9 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="serviceAccount:terraform@$PROJECT_ID.iam.gserviceaccount.com" \
     --role="roles/serviceusage.serviceUsageAdmin"
 
+# Create service accout key
 
+gcloud iam service-accounts keys create terraform-sa-key.json --iam-account=terraform@$PROJECT_ID.iam.gserviceaccount.com
 
 # Enable the apis required (it may take some minutes)
 # Some apis require to enable billing before to activate, terraform will help with that
@@ -47,3 +49,7 @@ gcloud services enable cloudresourcemanager.googleapis.com
 gcloud services enable serviceusage.googleapis.com
 gcloud services enable networkmanagement.googleapis.com
 gcloud services enable sqladmin.googleapis.com
+
+# Enable the billing
+echo "Enable the billig for this new project, please click the followig link \n"
+echo "https://console.cloud.google.com/billing/linkedaccount?cloudshell=true&project=$PROJECT_ID"
